@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Room;
+use Validator;
 
 class RoomController extends Controller
 {
@@ -14,7 +15,12 @@ class RoomController extends Controller
      */
     public function index()
     {
-        return response()->json(Room::get(),200);
+        // $roomparams = [
+
+
+        // ];
+        $room = Room::with('shop')->get();
+        return response()->json($room,200);
     }
 
     /**
@@ -35,7 +41,16 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-       
+       $rules = [ 
+           'name' => 'required|min:1',
+           'max_people' => 'required|numeric',
+           'floor' => 'required|min:1',
+           'price' => 'required|numeric',
+           'special_price' => 'required|numeric',
+           'shop_id' => 'required|min:1',
+           'deposit' => 'required|',
+           'description' => 'required|min:5|max:200',
+       ];
         $roomparams = [
             'name' => $request->get('name'),
             'max_people' => $request->get('max_people'),
@@ -46,9 +61,11 @@ class RoomController extends Controller
             'deposit' => $request->get('deposit'),
             'description' => $request->get('description'),
             'status' => 'true'
-            
-
         ];
+        $validator = Validator::make($roomparams, $rules);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
         $room = Room::insert($roomparams);
         return response()->json($room,201);
     }
@@ -61,7 +78,11 @@ class RoomController extends Controller
      */
     public function show($id)
     {
-        return response()->json(Room::find($id),200);
+        $room = Room::find($id);
+        if(is_null($room)){
+            return response()->json(["message"=>"Room not found"], 404);
+        }
+        return response()->json($room,200);
     }
 
     /**
@@ -86,7 +107,7 @@ class RoomController extends Controller
     {
         $room = Room::find($id);
         if(is_null($room)){
-            return response()->json('not found!!', 404);
+            return response()->json(["message" => "Room not found!"], 404);
         }
         $room ->update($request->all());
         return response()->json($room,200);
@@ -102,7 +123,7 @@ class RoomController extends Controller
     {
         $room = Room::find($id);
         if(is_null($room)){
-            return response()->json(["message" => "Article not found!"], 404);
+            return response()->json(["message" => "Room not found!"], 404);
         }
         $room->delete();
         return response()->json(null,204);

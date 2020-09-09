@@ -18,9 +18,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// room
 Route::get('room', 'RoomController@index');
 Route::get('room/{room}', 'RoomController@show');
 Route::post('room', 'RoomController@store');
 Route::put('room/{id}', 'RoomController@update');
 Route::delete('room/{id}', 'RoomController@destroy');
 Route::delete('room/{id}', 'RoomController@destroy');
+
+//booking
+Route::get('booking', 'BookingController@index');
+

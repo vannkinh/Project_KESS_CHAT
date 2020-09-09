@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
+
+    public function booking(){
+        return $this->belongsTo(Booking::class, 'booking_id');
+    }
+
+    public function shop(){
+        return $this->belongsTo(Shop::class, 'shop_id');
+    }
+
     protected $table = "rooms";
 
     protected $fillable = [
@@ -21,4 +30,5 @@ class Room extends Model
         'created_at',
         'updated_at',
     ];
+
 }

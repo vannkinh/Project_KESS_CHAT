@@ -12,11 +12,11 @@ class CreateBookingsTable extends Migration
      * @return void
      */
     public function up()
+
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('type');
-            $table->unsignedBigInteger('type_id');
             $table->unsignedBigInteger('shop_id');
             $table->unsignedBigInteger('user_id');
             $table->date('date');
@@ -28,6 +28,7 @@ class CreateBookingsTable extends Migration
             $table->string('paymentMethod');
             $table->string('comment')->nullable();
             $table->timestamps();
+
         });
     }
 

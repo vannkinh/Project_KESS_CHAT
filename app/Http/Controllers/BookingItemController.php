@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Booking;
+use App\BookingItem;
 
-class BookingController extends Controller
+class BookingItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +14,8 @@ class BookingController extends Controller
      */
     public function index()
     {
-        // $Booking = Booking::where('user_id',1)->get();
-        $Booking = Booking::with(['user','bookingItem'])->get();
-        return response()->json($Booking,200);
+        $bookingItem = BookingItem::with('booking')->get();
+        return response()->json($bookingItem,200);
     }
 
     /**

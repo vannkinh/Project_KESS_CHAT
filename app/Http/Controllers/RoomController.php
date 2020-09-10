@@ -15,11 +15,11 @@ class RoomController extends Controller
      */
     public function index()
     {
-        // $roomparams = [
-
-
-        // ];
+    
+        // $room = Room::where('id',1)->get();
         $room = Room::with('shop')->get();
+        // $room = Room::get(['name','max_people']);
+        // $room = Room::with('shop')->get('name');
         return response()->json($room,200);
     }
 
@@ -50,6 +50,7 @@ class RoomController extends Controller
            'shop_id' => 'required|min:1',
            'deposit' => 'required|',
            'description' => 'required|min:5|max:200',
+           
        ];
         $roomparams = [
             'name' => $request->get('name'),
@@ -78,7 +79,9 @@ class RoomController extends Controller
      */
     public function show($id)
     {
-        $room = Room::find($id);
+        // $room = Room::where('id',1)->get();
+
+        $room = Room::with('shop')->find($id);
         if(is_null($room)){
             return response()->json(["message"=>"Room not found"], 404);
         }

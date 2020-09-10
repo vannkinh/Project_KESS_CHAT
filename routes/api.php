@@ -28,4 +28,6 @@ Route::delete('room/{id}', 'RoomController@destroy');
 
 //booking
 Route::get('booking', 'BookingController@index');
+//bookingItem
+Route::get('bookingItem', 'BookingItemController@index');
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Room;
+use App\Shop;
 use Validator;
 
 class RoomController extends Controller
@@ -17,6 +18,7 @@ class RoomController extends Controller
     {
     
         // $room = Room::where('id',1)->get();
+        // $room = Room::get();
         $room = Room::with('shop')->get();
         // $room = Room::get(['name','max_people']);
         // $room = Room::with('shop')->get('name');
@@ -81,6 +83,7 @@ class RoomController extends Controller
     {
         // $room = Room::where('id',1)->get();
 
+        // $room = Room::find($id);
         $room = Room::with('shop')->find($id);
         if(is_null($room)){
             return response()->json(["message"=>"Room not found"], 404);

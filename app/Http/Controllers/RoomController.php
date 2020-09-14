@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Room;
 use App\Shop;
+use App\Image;
 use Validator;
 
 class RoomController extends Controller
@@ -19,7 +20,7 @@ class RoomController extends Controller
     
         // $room = Room::where('id',1)->get();
         // $room = Room::get();
-        $room = Room::with('shop')->get();
+        $room = Room::with(['shop','image'])->get();
         // $room = Room::get(['name','max_people']);
         // $room = Room::with('shop')->get('name');
         return response()->json($room,200);
@@ -43,35 +44,35 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-       $rules = [ 
-           'name' => 'required|min:1',
-           'max_people' => 'required|numeric',
-           'floor' => 'required|min:1',
-           'price' => 'required|numeric',
-           'special_price' => 'required|numeric',
-           'shop_id' => 'required|min:1',
-           'deposit' => 'required|',
-           'description' => 'required|min:5|max:200',
-           
-       ];
-        $roomparams = [
-            'name' => $request->get('name'),
-            'max_people' => $request->get('max_people'),
-            'floor' => $request->get('floor'),
-            'price' => $request->get('price'),
-            'special_price' => $request->get('special_price'),
-            'shop_id' => $request->get('shop_id'),
-            'deposit' => $request->get('deposit'),
-            'description' => $request->get('description'),
-            'status' => 'true'
-        ];
-        $validator = Validator::make($roomparams, $rules);
-        if($validator->fails()){
-            return response()->json($validator->errors(), 400);
+            $room = new room();
+            $room -> name = $request->input("name");
+            $room -> max_people = $request->input("max_people");
+            $room -> floor = $request->input("floor");
+            $room -> price = $request->input("price");
+            $room -> special_price = $request->input("special_price");
+            $room -> shop_id = $request->input("shop_id");
+            $room -> deposit = $request->input("deposit");
+            $room-> status = "true";
+            $room -> description = $request->input("description");
+            $room->save();
+
+
+            $image = new image();
+            $image-> item_id = $room->id;
+            $image-> type = "room";
+            if ($request->hasfile('image')){
+                $file = $request->file('image');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '.' .$extension;
+                $file->move('images/', $filename);
+                $image->image = $filename;
+            }
+            else {
+                return $request;
+                $image->image = '';
+            }
+            $image->save();
         }
-        $room = Room::insert($roomparams);
-        return response()->json($room,201);
-    }
 
     /**
      * Display the specified resource.
@@ -84,7 +85,7 @@ class RoomController extends Controller
         // $room = Room::where('id',1)->get();
 
         // $room = Room::find($id);
-        $room = Room::with('shop')->find($id);
+        $room = Room::with(['shop','image'])->find($id);
         if(is_null($room)){
             return response()->json(["message"=>"Room not found"], 404);
         }

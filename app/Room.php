@@ -14,6 +14,9 @@ class Room extends Model
     public function shop(){
         return $this->belongsTo(Shop::class, 'shop_id');
     }
+    public function image(){
+        return $this->hasMany(Image::class, 'item_id');
+    }
 
     protected $table = "rooms";
 
@@ -26,6 +29,7 @@ class Room extends Model
         'shop_id',
         'deposit',
         'description',
+        'image_id',
         'status',
         'created_at',
         'updated_at',

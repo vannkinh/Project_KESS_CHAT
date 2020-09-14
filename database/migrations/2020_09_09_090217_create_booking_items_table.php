@@ -14,13 +14,14 @@ class CreateBookingItemsTable extends Migration
     public function up()
     {
         Schema::create('booking_items', function (Blueprint $table) {
-            $table->unsignedBigInteger('itemID');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('item_id');
             $table->unsignedBigInteger('booking_id');
             $table->integer('quantity');
             $table->timestamps();
 
 
-            $table->foreign('itemID')
+            $table->foreign('item_id')
             ->references('id')
             ->on('rooms')
             ->onDelete('cascade');

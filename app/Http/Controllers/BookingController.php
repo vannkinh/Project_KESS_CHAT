@@ -61,7 +61,7 @@ class BookingController extends Controller
 
         $bookingItem = new bookingItem();
         $bookingItem-> booking_id = $booking->id;
-        $bookingItem-> itemID = $request->input("itemID");
+        $bookingItem-> item_id = $request->input("item_id");
         $bookingItem-> quantity = $request->input("quantity");
         $bookingItem->save();
     }

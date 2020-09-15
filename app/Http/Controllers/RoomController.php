@@ -23,7 +23,7 @@ class RoomController extends Controller
         $room = Room::with(['shop','image'])->get();
         // $room = Room::get(['name','max_people']);
         // $room = Room::with('shop')->get('name');
-        return response()->json($room,200);
+        return response()->json(['data'=>$room],200);
     }
 
     /**
@@ -57,21 +57,23 @@ class RoomController extends Controller
             $room->save();
 
 
-            $image = new image();
+           $image = new image();
             $image-> item_id = $room->id;
             $image-> type = "room";
             if ($request->hasfile('image')){
                 $file = $request->file('image');
                 $extension = $file->getClientOriginalExtension();
                 $filename = time() . '.' .$extension;
+                $file_url = 'images/'.$filename;
                 $file->move('images/', $filename);
-                $image->image = $filename;
+                $image->image = $file_url;
             }
             else {
                 return $request;
                 $image->image = '';
             }
             $image->save();
+            
         }
 
     /**
@@ -89,7 +91,7 @@ class RoomController extends Controller
         if(is_null($room)){
             return response()->json(["message"=>"Room not found"], 404);
         }
-        return response()->json($room,200);
+        return response()->json(['data'=>$room],200);
     }
 
     /**
@@ -117,7 +119,7 @@ class RoomController extends Controller
             return response()->json(["message" => "Room not found!"], 404);
         }
         $room ->update($request->all());
-        return response()->json($room,200);
+        return response()->json(['data'=>$room],200);
     }
 
     /**

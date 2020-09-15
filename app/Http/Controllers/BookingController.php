@@ -47,7 +47,7 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $booking = new booking();
-        $booking-> type = $request->input("type");
+        $booking-> type = "room";
         $booking-> shop_id = $request->input("shop_id");
         $booking-> user_id = $request->input("user_id");
         $booking-> date = $request->input("date");
@@ -61,8 +61,13 @@ class BookingController extends Controller
 
         $bookingItem = new bookingItem();
         $bookingItem-> booking_id = $booking->id;
-        $bookingItem-> item_id = $request->input("item_id");
-        $bookingItem-> quantity = $request->input("quantity");
+        $bookingItem[] = [
+            'item_id'=> $request->input("item_id"),
+            'quantity'=> $request->input("quantity")
+        ];
+        // $bookingItem-> item_id = $request->input("item_id");
+        // $bookingItem-> quantity = $request->input("quantity");
+        // $bookingItem
         $bookingItem->save();
     }
     

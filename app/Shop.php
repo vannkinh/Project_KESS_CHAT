@@ -10,5 +10,9 @@ class Shop extends Model
     {
         return $this->hasMany(Room::class, 'shop_id');
     }
+    public function table()
+    {
+        return $this->hasMany(Table::class, 'shop_id');
+    }
     protected $table = "shops";
 }

@@ -19,13 +19,13 @@ class BookingController extends Controller
         // $Booking = Booking::where('user_id',1)->get();
         // $bookingItem = BookingItem::with('booking')->get(['shop_id','user_id']);
         $Booking = Booking::with(['user','bookingItem'])->get();
-        return response()->json($Booking,200);
+        return response()->json(['data'=>$Booking],200);
     }
     
     public function listshop()
     {
         $shop = Shop::with('room')->get();
-        return response()->json($shop,200);
+        return response()->json(['data'=>$shop],200);
     }
 
     /**
@@ -46,6 +46,8 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->get('items'));
+
         $booking = new booking();
         $booking-> type = "room";
         $booking-> shop_id = $request->input("shop_id");
@@ -61,13 +63,12 @@ class BookingController extends Controller
 
         $bookingItem = new bookingItem();
         $bookingItem-> booking_id = $booking->id;
-        $bookingItem[] = [
-            'item_id'=> $request->input("item_id"),
-            'quantity'=> $request->input("quantity")
-        ];
-        // $bookingItem-> item_id = $request->input("item_id");
-        // $bookingItem-> quantity = $request->input("quantity");
-        // $bookingItem
+        foreach ( $request->get('items') as $items) {
+            items::insert([
+                'item_id' => $request->item_id,
+                'quantity' => $request->quantity,
+            ]);
+        }        
         $bookingItem->save();
     }
     
@@ -84,13 +85,16 @@ class BookingController extends Controller
         if(is_null($booking)){
             return response()->json(["message"=>"Room not found"], 404);
         }
-        return response()->json($booking,200);
+        return response()->json(['data'=>$booking],200);
     }
 
     public function shopdetail($id)
     {
         $shop = Shop::with('room')->find($id);
-        return response()->json($shop,200);
+        if(is_null($shop)){
+            return response()->json(["message"=>"Shop not found"], 404);
+        }
+        return response()->json(['data'=>$shop],200);
     }
 
     /**

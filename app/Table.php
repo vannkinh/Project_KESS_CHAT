@@ -4,9 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class Table extends Model
 {
-
     public function booking(){
         return $this->belongsTo(Booking::class, 'booking_id');
     }
@@ -18,7 +17,7 @@ class Room extends Model
         return $this->hasMany(Image::class, 'item_id')->where('type','room');
     }
 
-    protected $table = "rooms";
+    protected $table = "tables";
 
     protected $fillable = [
         'name',

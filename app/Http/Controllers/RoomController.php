@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Room;
 use App\Shop;
 use App\Image;
+use App\Table;
 use Validator;
 
 class RoomController extends Controller
@@ -15,15 +16,21 @@ class RoomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function allrooms()
     {
-    
         // $room = Room::where('id',1)->get();
         // $room = Room::get();
         $room = Room::with(['shop','image'])->get();
         // $room = Room::get(['name','max_people']);
         // $room = Room::with('shop')->get('name');
         return response()->json(['data'=>$room],200);
+    }
+
+    public function alltable()
+    {
+        $table = Table::with(['shop','image'])->get();
+        return response()->json(['data'=>$table],200);
+
     }
 
     /**
@@ -42,7 +49,7 @@ class RoomController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function createroom(Request $request)
     {
             $room = new room();
             $room -> name = $request->input("name");
@@ -74,15 +81,49 @@ class RoomController extends Controller
             }
             $image->save();
             
-        }
+    }
 
+    public function createtable(Request $request)
+    {
+            $table = new table();
+            $table -> name = $request->input("name");
+            $table -> max_people = $request->input("max_people");
+            $table -> floor = $request->input("floor");
+            $table -> price = $request->input("price");
+            $table -> special_price = $request->input("special_price");
+            $table -> shop_id = $request->input("shop_id");
+            $table -> deposit = $request->input("deposit");
+            $table-> status = "true";
+            $table -> description = $request->input("description");
+            $table->save();
+
+
+            $image = new image();
+            $image-> item_id = $table->id;
+            $image-> type = "table";
+            if ($request->hasfile('image')){
+                $file = $request->file('image');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '.' .$extension;
+                $file_url = 'images/'.$filename;
+                $file->move('images/', $filename);
+                $image->image = $file_url;
+            }
+            else {
+                return $request;
+                $image->image = '';
+            }
+            $image->save();
+            
+        }
+    
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function roomdetail($id)
     {
         // $room = Room::where('id',1)->get();
 
@@ -92,6 +133,16 @@ class RoomController extends Controller
             return response()->json(["message"=>"Room not found"], 404);
         }
         return response()->json(['data'=>$room],200);
+    }
+
+
+    public function tabledetail($id)
+    {
+        $table = Table::with(['shop','image'])->find($id);
+        if(is_null($table)){
+            return response()->json(["message"=>"Table not found"], 404);
+        }
+        return response()->json(['data'=>$table],200);
     }
 
     /**
@@ -112,7 +163,7 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateroom(Request $request, $id)
     {
         $room = Room::find($id);
         if(is_null($room)){
@@ -122,19 +173,37 @@ class RoomController extends Controller
         return response()->json(['data'=>$room],200);
     }
 
+    public function updatetable(Request $request, $id)
+    {
+        $table = Table::find($id);
+        if(is_null($table)){
+            return response()->json(["message" => "Table not found!"], 404);
+        }
+        $table ->update($request->all());
+        return response()->json(['data'=>$table],200);
+    }
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroyroom($id)
     {
         $room = Room::find($id);
         if(is_null($room)){
             return response()->json(["message" => "Room not found!"], 404);
         }
         $room->delete();
+        return response()->json(null,204);
+    }
+    public function destroytable($id)
+    {
+        $table = Table::find($id);
+        if(is_null($table)){
+            return response()->json(["message" => "Table not found!"], 404);
+        }
+        $table->delete();
         return response()->json(null,204);
     }
 }

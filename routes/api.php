@@ -19,19 +19,29 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 // room
-Route::get('room', 'RoomController@index');
-Route::get('room/{room}', 'RoomController@show');
-Route::post('room', 'RoomController@store');
-Route::put('room/{id}', 'RoomController@update');
-Route::delete('room/{id}', 'RoomController@destroy');
-Route::delete('room/{id}', 'RoomController@destroy');
+Route::get('rooms', 'RoomController@allrooms');
+Route::get('room/{room}', 'RoomController@roomdetail');
+Route::post('room', 'RoomController@createroom');
+Route::put('room/{id}', 'RoomController@updateroom');
+Route::delete('room/{id}', 'RoomController@destroyroom');
+
+
+// table
+Route::get('tables', 'RoomController@alltable');
+Route::get('table/{table}', 'RoomController@tabledetail');
+Route::post('table', 'RoomController@createtable');
+Route::put('table/{id}', 'RoomController@updatetable');
+Route::delete('table/{id}', 'RoomController@destroytable');
+
 
 //booking
-Route::get('booking', 'BookingController@allbooking');
+Route::get('bookings', 'BookingController@allbooking');
 Route::get('booking/{booking}', 'BookingController@bookingdetail');
 Route::post('booking', 'BookingController@store');
+
 //bookingItem
 Route::get('bookingItem', 'BookingItemController@index');
+
 //shop
-Route::get('shop', 'BookingController@listshop');
+Route::get('shops', 'BookingController@listshop');
 Route::get('shop/{shop}', 'BookingController@shopdetail');

@@ -25,6 +25,8 @@ class CreateTablesTable extends Migration
             $table->string('description')->nullable();
             $table->string('status');
             $table->timestamps();
+
+
         });
     }
 

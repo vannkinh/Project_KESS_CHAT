@@ -37,7 +37,7 @@ Route::delete('table/{id}', 'RoomController@destroytable');
 //booking
 Route::get('bookings', 'BookingController@allbooking');
 Route::get('booking/{booking}', 'BookingController@bookingdetail');
-Route::post('booking', 'BookingController@store');
+Route::post('booking', 'BookingController@createbooking');
 
 //bookingItem
 Route::get('bookingItem', 'BookingItemController@index');

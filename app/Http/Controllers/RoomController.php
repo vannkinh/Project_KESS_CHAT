@@ -8,6 +8,7 @@ use App\Shop;
 use App\Image;
 use App\Table;
 use Validator;
+use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
@@ -51,34 +52,34 @@ class RoomController extends Controller
      */
     public function createroom(Request $request)
     {
-            $room = new room();
-            $room -> name = $request->input("name");
-            $room -> max_people = $request->input("max_people");
-            $room -> floor = $request->input("floor");
-            $room -> price = $request->input("price");
-            $room -> special_price = $request->input("special_price");
-            $room -> shop_id = $request->input("shop_id");
-            $room -> deposit = $request->input("deposit");
-            $room-> status = "true";
-            $room -> description = $request->input("description");
+            $room=new room();
+            $room->name = $request->input("name");
+            $room->max_people = $request->input("max_people");
+            $room->floor = $request->input("floor");
+            $room->price = $request->input("price");
+            $room->special_price = $request->input("special_price");
+            $room->shop_id = $request->input("shop_id");
+            $room->deposit = $request->input("deposit");
+            $room->status = "true";
+            $room->description = $request->input("description");
             $room->save();
 
 
-           $image = new image();
-            $image-> item_id = $room->id;
-            $image-> type = "room";
-            if ($request->hasfile('image')){
-                $file = $request->file('image');
-                $extension = $file->getClientOriginalExtension();
-                $filename = time() . '.' .$extension;
-                $file_url = 'images/'.$filename;
-                $file->move('images/', $filename);
-                $image->image = $file_url;
-            }
-            else {
-                return $request;
-                $image->image = '';
-            }
+            $image=new image();
+            $image->item_id = $room->id;
+            $image->type = "room";
+            $imageUpload = $request->image;
+            $explode = explode(",", $imageUpload);
+            $imageData = explode("/",$explode[0]);
+            $imgExtension = explode(";", $imageData[1])[0];
+            // dd($imgExtension);
+            $imgSource = $explode[1];
+            // dd($imgExtension);
+            $imageName = str_random(10).'.'.$imgExtension;
+            $path = '/images/rooms/'. $imageName;
+            Storage::disk('public')->put($path, base64_decode($imgSource));
+            // dd($upload);
+            $image->image = $path;
             $image->save();
             
     }
@@ -86,33 +87,30 @@ class RoomController extends Controller
     public function createtable(Request $request)
     {
             $table = new table();
-            $table -> name = $request->input("name");
-            $table -> max_people = $request->input("max_people");
-            $table -> floor = $request->input("floor");
-            $table -> price = $request->input("price");
-            $table -> special_price = $request->input("special_price");
-            $table -> shop_id = $request->input("shop_id");
-            $table -> deposit = $request->input("deposit");
-            $table-> status = "true";
-            $table -> description = $request->input("description");
+            $table->name = $request->input("name");
+            $table->max_people = $request->input("max_people");
+            $table->floor = $request->input("floor");
+            $table->price = $request->input("price");
+            $table->special_price = $request->input("special_price");
+            $table->shop_id = $request->input("shop_id");
+            $table->deposit = $request->input("deposit");
+            $table->status = "true";
+            $table->description = $request->input("description");
             $table->save();
 
 
-            $image = new image();
-            $image-> item_id = $table->id;
-            $image-> type = "table";
-            if ($request->hasfile('image')){
-                $file = $request->file('image');
-                $extension = $file->getClientOriginalExtension();
-                $filename = time() . '.' .$extension;
-                $file_url = 'images/'.$filename;
-                $file->move('images/', $filename);
-                $image->image = $file_url;
-            }
-            else {
-                return $request;
-                $image->image = '';
-            }
+            $image=new image();
+            $image->item_id=$table->id;
+            $image->type="table";
+            $imageUpload=$request->image;
+            $explode=explode(",",$imageUpload)[0];
+            $imgExtension=explode("/",$explode)[1];
+            $Extension=explode(";",$imgExtension)[0];
+            $imgSource = $explode[1];
+            $imageName = str_random(10).'.'.$Extension;
+            $path = '/images/tables/'. $imageName;
+            Storage::disk('public')->put($path, base64_decode($imgSource));
+            $image->image = $path;
             $image->save();
             
         }

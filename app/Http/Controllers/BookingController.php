@@ -44,7 +44,7 @@ class BookingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function createbooking(Request $request)
     {
         // dd($request->get('items'));
 
@@ -59,17 +59,21 @@ class BookingController extends Controller
         $booking-> total = $request->input("total");
         $booking-> paymentMethod = $request->input("paymentMethod");
         $booking-> comment = $request->input("comment");
-        $booking->save();
+        // $booking->save();
 
         $bookingItem = new bookingItem();
         $bookingItem-> booking_id = $booking->id;
-        foreach ( $request->get('items') as $items) {
-            items::insert([
-                'item_id' => $request->item_id,
-                'quantity' => $request->quantity,
-            ]);
-        }        
-        $bookingItem->save();
+        $item = $request->items;
+        dd($item);
+
+        // foreach ( $item as $items) {
+        //     $bookingItem::insert([
+
+        //     ])
+
+        // }  
+        // $bookingItem-> $request->items;
+        // $bookingItem->save();
     }
     
 
@@ -83,7 +87,7 @@ class BookingController extends Controller
     {
         $booking = Booking::with(['user','bookingItem'])->find($id);
         if(is_null($booking)){
-            return response()->json(["message"=>"Room not found"], 404);
+            return response()->json(["message"=>"Not found"], 404);
         }
         return response()->json(['data'=>$booking],200);
     }

@@ -39,9 +39,21 @@ Route::get('bookings', 'BookingController@allbooking');
 Route::get('booking/{booking}', 'BookingController@bookingdetail');
 Route::post('booking', 'BookingController@createbooking');
 
+
 //bookingItem
 Route::get('bookingItem', 'BookingItemController@index');
+
 
 //shop
 Route::get('shops', 'BookingController@listshop');
 Route::get('shop/{shop}', 'BookingController@shopdetail');
+
+
+
+//user's booking history
+Route::get('users', 'BookingController@listalluser');
+Route::get('user/{user}', 'BookingController@userbookinghistory');
+
+
+//shop's booking history
+Route::get('shophistory/{shophistory}', 'BookingController@shopbookinghistory');

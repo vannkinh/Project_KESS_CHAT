@@ -80,7 +80,13 @@ class RoomController extends Controller
             Storage::disk('public')->put($path, base64_decode($imgSource));
             // dd($upload);
             $image->image = $path;
+            // $room = Room::with(['shop','image']);
+            // dd($room);
             $image->save();
+            // return response()->json(['data'=>$room], 200);
+            return response()->json(["message"=>"Create Success"], 200);
+
+
             
     }
 
@@ -100,18 +106,22 @@ class RoomController extends Controller
 
 
             $image=new image();
-            $image->item_id=$table->id;
-            $image->type="table";
-            $imageUpload=$request->image;
-            $explode=explode(",",$imageUpload)[0];
-            $imgExtension=explode("/",$explode)[1];
-            $Extension=explode(";",$imgExtension)[0];
+            $image->item_id = $table->id;
+            $image->type = "table";
+            $imageUpload = $request->image;
+            $explode = explode(",", $imageUpload);
+            $imageData = explode("/",$explode[0]);
+            $imgExtension = explode(";", $imageData[1])[0];
+            // dd($imgExtension);
             $imgSource = $explode[1];
-            $imageName = str_random(10).'.'.$Extension;
+            // dd($imgExtension);
+            $imageName = str_random(10).'.'.$imgExtension;
             $path = '/images/tables/'. $imageName;
             Storage::disk('public')->put($path, base64_decode($imgSource));
+            // dd($upload);
             $image->image = $path;
             $image->save();
+            return response()->json(["message"=>"Create Success"], 200);
             
         }
     
@@ -193,7 +203,7 @@ class RoomController extends Controller
             return response()->json(["message" => "Room not found!"], 404);
         }
         $room->delete();
-        return response()->json(null,204);
+        return response()->json(["message"=>"Room has been deleted"],200);
     }
     public function destroytable($id)
     {
@@ -202,6 +212,6 @@ class RoomController extends Controller
             return response()->json(["message" => "Table not found!"], 404);
         }
         $table->delete();
-        return response()->json(null,204);
+        return response()->json(["message"=>"Table has been deleted"],200);
     }
 }

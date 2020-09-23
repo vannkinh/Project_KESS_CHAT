@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Booking;
 use App\BookingItem;
 use App\Shop;
+use App\User;
 
 class BookingController extends Controller
 {
@@ -24,8 +25,13 @@ class BookingController extends Controller
     
     public function listshop()
     {
-        $shop = Shop::with('room')->get();
+        $shop = Shop::with('room','table')->get();
         return response()->json(['data'=>$shop],200);
+    }
+
+    public function listalluser(){
+        $user = User::with('booking')->get();
+        return response()->json(['data'=>$user],200);
     }
 
     /**
@@ -64,7 +70,21 @@ class BookingController extends Controller
         $bookingItem = new bookingItem();
         $bookingItem-> booking_id = $booking->id;
         $item = $request->items;
-        dd($item);
+        // dd($item);
+        $ele=[];
+        for ($i = 0; $i < count($item); $i++){
+            // etecho "The result is"+$item[0];
+            // $ele0 = $item[0];
+            // $ele1 = $item[1];
+            $ele[$i]['item_id'] = $item[$i]['item_id'];
+            $ele[$i]['quantity'] = $item[$i]['quantity'];
+            $ele[$i]['booking_id'] = $booking->id;
+            
+            // dd($ele0,$ele1);
+            // dd(count($item));
+
+        }
+        dd($ele);
 
         // foreach ( $item as $items) {
         //     $bookingItem::insert([
@@ -94,7 +114,27 @@ class BookingController extends Controller
 
     public function shopdetail($id)
     {
-        $shop = Shop::with('room')->find($id);
+        $shop = Shop::with(['room','table'])->find($id);
+        if(is_null($shop)){
+            return response()->json(["message"=>"Shop not found"], 404);
+        }
+        return response()->json(['data'=>$shop],200);
+    }
+
+
+    public function userbookinghistory($id)
+    {
+        $user = User::with('booking')->find($id);
+        if(is_null($user)){
+            return response()->json(["message"=>"This booking is null"], 404);
+        }
+        return response()->json(['data'=>$user]);
+    }
+
+
+    public function shopbookinghistory($id)
+    {
+        $shop = Shop::with('booking')->find($id);
         if(is_null($shop)){
             return response()->json(["message"=>"Shop not found"], 404);
         }

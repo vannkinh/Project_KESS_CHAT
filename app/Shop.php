@@ -14,5 +14,9 @@ class Shop extends Model
     {
         return $this->hasMany(Table::class, 'shop_id');
     }
+    public function booking()
+    {
+        return $this->hasMany(Booking::class, 'shop_id');
+    }
     protected $table = "shops";
 }

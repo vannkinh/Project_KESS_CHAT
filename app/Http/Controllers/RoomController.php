@@ -64,6 +64,9 @@ class RoomController extends Controller
             $room->description = $request->input("description");
             $room->save();
 
+            // $room=new floor();
+
+
 
             $image=new image();
             $image->item_id = $room->id;

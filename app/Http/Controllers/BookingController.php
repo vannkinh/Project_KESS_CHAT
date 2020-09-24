@@ -112,6 +112,7 @@ class BookingController extends Controller
         return response()->json(['data'=>$booking],200);
     }
 
+
     public function shopdetail($id)
     {
         $shop = Shop::with(['room','table'])->find($id);
@@ -119,6 +120,15 @@ class BookingController extends Controller
             return response()->json(["message"=>"Shop not found"], 404);
         }
         return response()->json(['data'=>$shop],200);
+    }
+    
+    public function floordetail($id)
+    {
+        $floor = Room::find($id);
+        if(is_null($floor)){
+            return response()->json(["message"=>"Shop not found"], 404);
+        }
+        return response()->json(['data'=>$floor],200);
     }
 
 
